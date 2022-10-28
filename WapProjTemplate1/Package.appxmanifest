@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  IgnorableNamespaces="uap rescap">
+
+	<Identity
+	  Name="3af96bf9-fc89-466f-b5af-53a92a995e92"
+	  Publisher="CN=paulcam"
+	  Version="1.0.0.0" />
+
+	<Properties>
+		<DisplayName>WapProjTemplate1</DisplayName>
+		<PublisherDisplayName>paulcam</PublisherDisplayName>
+		<Logo>Images\StoreLogo.png</Logo>
+	</Properties>
+
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
+	</Dependencies>
+
+	<Resources>
+		<Resource Language="x-generate"/>
+	</Resources>
+
+	<Applications>
+		<Application Id="App"
+		  Executable="$targetnametoken$.exe"
+		  EntryPoint="$targetentrypoint$">
+			<uap:VisualElements
+			  DisplayName="WapProjTemplate1"
+			  Description="WapProjTemplate1"
+			  BackgroundColor="transparent"
+			  Square150x150Logo="Images\Square150x150Logo.png"
+			  Square44x44Logo="Images\Square44x44Logo.png">
+				<uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+				<uap:SplashScreen Image="Images\SplashScreen.png" />
+			</uap:VisualElements>
+			<Extensions>
+				<com:Extension Category="windows.comServer">
+					<com:ComServer>
+						<com:ExeServer Executable="ConsoleApp3\ConsoleApp3.exe" Arguments="-RegisterProcessAsComServer" DisplayName="C# Provider App">
+							<com:Class Id="75281d50-4c59-4d98-880b-b8f026082cbd" DisplayName="CSharpWidgetProvider" />
+						</com:ExeServer>
+					</com:ComServer>
+				</com:Extension>
+				<!--<com:Extension Category="windows.comInterface">
+					<com:ComInterface>
+						<com:ProxyStub Id="00000355-0000-0000-C000-000000000046" Path="Microsoft.Windows.Widgets.winmd"/>
+					</com:ComInterface>
+				</com:Extension>-->		   
+				<uap3:Extension Category="windows.appExtension">
+					<uap3:AppExtension Name="com.microsoft.windows.widgets" DisplayName="C# Widget Test App" Id="com.csharp.test" PublicFolder="Public">
+						<uap3:Properties>
+							<WidgetProvider>
+								<ProviderIcons>
+									<Icon Path="Images\StoreLogo.png" />
+								</ProviderIcons>
+								<Activation>
+									<!-- Apps exports COM interface which implements IWidgetProvider -->
+									<CreateInstance ClassId="75281d50-4c59-4d98-880b-b8f026082cbd" />
+								</Activation>
+
+								<Definitions>
+									<Definition Id="CSharpWidget"
+										DisplayName="C# Test Widget"
+										Description="Demonstrates Using C# for Widgets">
+										<Capabilities>
+											<Capability>
+												<Size Name="small" />
+											</Capability>
+											<Capability>
+												<Size Name="large" />
+											</Capability>
+										</Capabilities>
+										<ThemeResources>
+											<Icons>
+												<Icon Path="Images\StoreLogo.png" />
+											</Icons>
+											<Screenshots>
+												<Screenshot Path="Images\StoreLogo.png" DisplayAltText="C#!" />
+											</Screenshots>
+										</ThemeResources>
+									</Definition>
+								</Definitions>
+							</WidgetProvider>
+						</uap3:Properties>
+					</uap3:AppExtension>
+				</uap3:Extension>
+			</Extensions>
+		</Application>
+	</Applications>
+
+	<!--<Extensions>
+		<Extension Category="windows.activatableClass.proxyStub">
+			<ProxyStub ClassId="00000355-0000-0000-C000-000000000046">
+				<Path>Microsoft.Windows.Widgets.winmd</Path>
+				<Interface Name="Microsoft.Windows.Widgets.Providers.IWidgetProvider" InterfaceId="5C5774CC-72A0-452D-B9ED-075C0DD25EED" />
+			</ProxyStub>
+		</Extension>
+	</Extensions>-->
+
+	<Capabilities>
+		<Capability Name="internetClient" />
+		<rescap:Capability Name="runFullTrust" />
+	</Capabilities>
+</Package>

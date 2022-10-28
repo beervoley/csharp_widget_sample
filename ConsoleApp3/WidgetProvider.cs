@@ -10,6 +10,7 @@ using ConsoleApp3.COM;
 using Microsoft.Windows.Widgets.Providers;
 using WinRT;
 
+
 namespace ConsoleApp3
 {
     namespace COM
@@ -48,9 +49,10 @@ namespace ConsoleApp3
             if (riid == typeof(T).GUID || riid == Guid.Parse(COM.Guids.IUnknown))
             {
                 // Create the instance of the .NET object
-                ppvObject = Marshal.GetComInterfaceForObject(
-                    new T(),
-                    typeof(IWidgetProvider));
+                ppvObject = MarshalInspectable<IWidgetProvider>.FromManaged(new T());
+                //ppvObject = Marshal.GetComInterfaceForObject(
+                //    new T().As<IWidgetProvider>,
+                //    typeof(IWidgetProvider));
             }
             else
             {

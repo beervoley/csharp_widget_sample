@@ -52,6 +52,7 @@
 				<!--<com:Extension Category="windows.comInterface">
 					<com:ComInterface>
 						<com:ProxyStub Id="00000355-0000-0000-C000-000000000046" Path="Microsoft.Windows.Widgets.winmd"/>
+						<com:Interface ProxyStubClsid="00000355-0000-0000-C000-000000000046" Id="5C5774CC-72A0-452D-B9ED-075C0DD25EED"/>
 					</com:ComInterface>
 				</com:Extension>-->		   
 				<uap3:Extension Category="windows.appExtension">
@@ -96,14 +97,14 @@
 		</Application>
 	</Applications>
 
-	<!--<Extensions>
+	<Extensions>
 		<Extension Category="windows.activatableClass.proxyStub">
 			<ProxyStub ClassId="00000355-0000-0000-C000-000000000046">
 				<Path>Microsoft.Windows.Widgets.winmd</Path>
 				<Interface Name="Microsoft.Windows.Widgets.Providers.IWidgetProvider" InterfaceId="5C5774CC-72A0-452D-B9ED-075C0DD25EED" />
 			</ProxyStub>
 		</Extension>
-	</Extensions>-->
+	</Extensions>
 
 	<Capabilities>
 		<Capability Name="internetClient" />

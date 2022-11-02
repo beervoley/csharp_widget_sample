@@ -6,10 +6,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using ConsoleApp3.COM;
 using Microsoft.Windows.Widgets.Providers;
 using WinRT;
-
+using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace ConsoleApp3
 {
@@ -78,41 +80,105 @@ namespace ConsoleApp3
     [Guid("75281d50-4c59-4d98-880b-b8f026082cbd")]
     public sealed class WidgetProvider : IWidgetProvider
     {
+        private static readonly string _template = @"{
+            ""type"": ""AdaptiveCard"",
+            ""body"": [
+                {
+                    ""type"": ""TextBlock"",
+                    ""text"": ""${frameworkName}""
+                },
+                {
+                    ""type"": ""TextBlock"",
+                    ""text"": ""Invokes: ${cInvokes}""
+                },
+                {
+                    ""type"": ""TextBlock"",
+                    ""text"": ""last invoked: ${lastInvoke}""
+                }
+            ]
+        }";
+
+        private class WidgetState
+        {
+            public WidgetState()
+            {
+                cInvokes = 0;
+                lastInvoke = "";
+                frameworkName = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+            }
+            public uint cInvokes { get; set; }
+            public string lastInvoke { get; set; }
+            public string? frameworkName { get; }
+        }
+
+        private WidgetState _widgetState = new WidgetState();
+
+        private void _updateData(string id)
+        {
+            WidgetUpdateRequestOptions options = new WidgetUpdateRequestOptions(id);
+            options.Data = JsonSerializer.Serialize(_widgetState);
+            WidgetManager.GetDefault().UpdateWidget(options);
+        }
+
         public WidgetProvider() { }
 
         public void Activate(WidgetContext widgetContext)
         {
-            Console.WriteLine("Activate");
+            Console.WriteLine($"Activate id: {widgetContext.Id} definitionId: {widgetContext.DefinitionId}");
+            _widgetState.cInvokes++;
+            _widgetState.lastInvoke = "Activate";
         }
 
         public void CreateWidget(WidgetContext widgetContext)
         {
             Console.WriteLine($"CreateWidget id: {widgetContext.Id} definitionId: {widgetContext.DefinitionId}");
+            _widgetState.lastInvoke = "CreateWidget";
 
             WidgetUpdateRequestOptions options = new WidgetUpdateRequestOptions(widgetContext.Id);
-            options.Template = @"{ ""type"": ""AdaptiveCard"", ""body"": [ { ""type"": ""TextBlock"", ""text"": ""${version}"" ] }";
-            options.Data = $"{{ \"version\": {Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName} }}";
+            options.Template = _template; //$"{{ \"type\": \"AdaptiveCard\", \"body\": [ {{ \"type\": \"TextBlock\", \"text\": \"{_frameworkName}\"  }} ] }}";
+            options.Data = JsonSerializer.Serialize(_widgetState);
             WidgetManager.GetDefault().UpdateWidget(options);
+            _widgetState.cInvokes++;
         }
 
         public void Deactivate(string widgetId)
         {
-            Console.WriteLine("Deactivated");
+            Console.WriteLine($"Deactivate id: {widgetId}");
+            _widgetState.lastInvoke = "Deactivate";
+
+            _updateData(widgetId);
+
+            _widgetState.cInvokes++;
         }
 
         public void DeleteWidget(string widgetId, string customState)
         {
-            Console.WriteLine("DeleteWidget");
+            Console.WriteLine($"DeleteWidget id: {widgetId}");
+            _widgetState.lastInvoke = "DeleteWidget";
+
+            _updateData(widgetId);
+
+            _widgetState.cInvokes++;
         }
 
         public void OnActionInvoked(WidgetActionInvokedArgs actionInvokedArgs)
         {
-            Console.WriteLine("OnActionInvoked");
+            Console.WriteLine($"OnActionInvoked id: {actionInvokedArgs.WidgetContext.Id} definitionId: {actionInvokedArgs.WidgetContext.DefinitionId}");
+            _widgetState.lastInvoke = "OnActionInvoked";
+
+            _updateData(actionInvokedArgs.WidgetContext.Id);
+
+            _widgetState.cInvokes++;
         }
 
         public void OnWidgetContextChanged(WidgetContextChangedArgs contextChangedArgs)
         {
-            Console.WriteLine("OnWidgetContextChanged");
+            Console.WriteLine($"OnWidgetContextChanged id: {contextChangedArgs.WidgetContext.Id} definitionId: {contextChangedArgs.WidgetContext.DefinitionId}");
+            _widgetState.lastInvoke = "OnWidgetContextChanged";
+
+            _updateData(contextChangedArgs.WidgetContext.Id);
+
+            _widgetState.cInvokes++;
         }
     }
 }

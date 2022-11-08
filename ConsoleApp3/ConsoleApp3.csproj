@@ -9,13 +9,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.0" />
-		<PackageReference Include="Microsoft.Windows.Widgets" Version="0.3.14" GeneratePathProperty="true">
-		  <PrivateAssets>all</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221102.8-stable.ci" />
 	</ItemGroup>
-
-	<Target Name="CopyWinMD" AfterTargets="Build">
-		<Copy SourceFiles="$(PkgMicrosoft_Windows_Widgets)\lib\native\Microsoft.Windows.Widgets.winmd" DestinationFolder="$(OutDir)" />
-	</Target>
-
 </Project>

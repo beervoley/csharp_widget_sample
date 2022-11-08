@@ -14,7 +14,7 @@ static extern int CoRegisterClassObject(
 static extern int CoRevokeClassObject(uint dwRegister);
 
 
-if (args.Length == 1 && args[0] == "-RegisterProcessAsComServer")
+if (args.Length == 2 && args[0] == "-RegisterProcessAsComServer")
 {
     Console.WriteLine("Do the COM server thing!");
     uint cookie;
